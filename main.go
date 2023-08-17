@@ -3,6 +3,9 @@ package main
 import (
 	"e-commerce-cart/controllers"
 	"e-commerce-cart/database"
+	"e-commerce-cart/middleware"
+	"e-commerce-cart/routes"
+	"github.com/gin-gonic/gin"
 	"os"
 )
 
@@ -13,5 +16,19 @@ func main() {
 	}
 
 	app := controllers.NewApplication(database.ProductData(database.Client, "Products"),
-		database.UserData(database.Client("Users")))
+		database.UserData(database.Client, "Users"))
+
+	router := gin.New()
+	router.Use(gin.Logger())
+
+	routes.UserRoute(router)                // Handling routes
+	router.Use(middleware.Authentication()) // Handling middleware
+
+	// Handling routes
+	router.GET("/addtocart"app.AddToCart())
+	router.GET("/removeitem", app.RemoveItem())
+	router.GET("/cartcheckoout", app.BuyFromCart())
+	router.GET("/instantbuy", app.InstantBuy())
+
+
 }
