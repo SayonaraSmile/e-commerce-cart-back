@@ -6,6 +6,7 @@ import (
 	"e-commerce-cart/middleware"
 	"e-commerce-cart/routes"
 	"github.com/gin-gonic/gin"
+	"log"
 	"os"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	}
 
 	app := controllers.NewApplication(database.ProductData(database.Client, "Products"),
-		database.UserData(database.Client, "Users"))
+		database.UserData(database.Client, "Users")) // Creating new application
 
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -30,5 +31,5 @@ func main() {
 	router.GET("/cartcheckoout", app.BuyFromCart())
 	router.GET("/instantbuy", app.InstantBuy())
 
-
+	log.Fatal(router.Run(":" + port)) // Running server
 }
